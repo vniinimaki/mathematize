@@ -1,3 +1,4 @@
+package mathematize;
 import java.util.Arrays;
 public class Operations {
     
@@ -54,5 +55,11 @@ public class Operations {
 
     public static double celcToFahr(double number) {
         return (number * 9/5) + 32;
+    }
+
+    public static double convertInput(String input) throws NumberFormatException, NullPointerException{
+        double result;
+        result = Double.parseDouble(input);
+        return result;
     }
 }
