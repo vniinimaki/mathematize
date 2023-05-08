@@ -17,6 +17,19 @@ public class Mathematize implements ActionListener{
     public static Color barColor = new Color(255, 151, 151);
     public static Color color2 = new Color(182, 116, 116);
 
+    public static JTextField luku1 = new JTextField(" ", SwingConstants.CENTER);
+    public static JTextField luku2 = new JTextField(" ", SwingConstants.CENTER);
+    public static JTextField luku3 = new JTextField(" ", SwingConstants.CENTER);
+    public static JTextField vastaus = new JTextField(" ", SwingConstants.CENTER);
+    public static JLabel operaatio = new JLabel(" ", SwingConstants.CENTER);
+    public static JLabel information = new JLabel(" ", JLabel.CENTER);
+    public static JButton option1 = new JButton(" ");
+    public static JButton option2 = new JButton(" ");
+    public static JButton on = new JButton("=");
+    public static JButton copy = new JButton();
+    public static ImageIcon copyicon;
+    public static String state, lämpöstate, astestate;
+
     Mathematize() {  
 
         f = new JFrame();
@@ -62,118 +75,201 @@ public class Mathematize implements ActionListener{
 
         f.setJMenuBar(menubar);
         f.add(menuteksti);
-          
+
         f.setSize(800,600);
         f.setLayout(null);
         f.setVisible(true);
-    }  
-
-    public static JTextField luku1 = new JTextField(" ", SwingConstants.CENTER);
-    public static JTextField luku2 = new JTextField(" ", SwingConstants.CENTER);
-    public static JTextField luku3 = new JTextField(" ", SwingConstants.CENTER);
-    public static JTextField vastaus = new JTextField(" ", SwingConstants.CENTER);
-    public static JLabel operaatio = new JLabel(" ", SwingConstants.CENTER);
-    public static JLabel information = new JLabel(" ", JLabel.CENTER);
-    public static JButton option1 = new JButton(" ");
-    public static JButton option2 = new JButton(" ");
-    public static JButton on = new JButton("=");
-    public static JButton copy = new JButton();
-    public static ImageIcon copyicon;
-
-    public void actionPerformed(ActionEvent e) {
 
         copyicon = new ImageIcon(getClass().getResource("copyicon.png"), "icon of the copy button");
         copy.setIcon(copyicon);
 
-        luku1.setFont(bigfont); luku1.setBackground(Color.LIGHT_GRAY);
-        luku2.setFont(bigfont); luku2.setBackground(Color.LIGHT_GRAY);
-        luku3.setFont(bigfont); luku3.setBackground(Color.LIGHT_GRAY);
-        option1.setFont(font); option1.setBackground(Color.LIGHT_GRAY);
-        option2.setFont(font); option2.setBackground(Color.LIGHT_GRAY);
-        vastaus.setFont(bigfont); vastaus.setBackground(barColor);
-        information.setOpaque(true);
-        information.setFont(smallfont); information.setBackground(barColor);
-        on.setFont(bigfont); on.setBackground(color2);
-        operaatio.setFont(bigfont);
-        copy.setBackground(color2);
+    }  
 
-        menuteksti.setBounds(200, 25, 400, 40);
-        operaatio.setBounds(380, 100, 40, 50);
-        luku1.setBounds(245, 100, 110, 60);
-        luku2.setBounds(445, 100, 110, 60);
-        luku3.setBounds(270, 130, 80, 60);
-        option1.setBounds(450, 100, 60, 60);
-        option2.setBounds(450, 160, 60, 60);
-        option1.setMargin(new Insets(0, 0, 0, 0));
-        option2.setMargin(new Insets(0, 0, 0, 0));
-        vastaus.setBounds(290,250, 220, 70);
-        vastaus.setEditable(false);
-        on.setBounds(220, 250, 70, 70);
-        copy.setBounds(510, 250, 70, 70);
-        information.setBounds(100, 350, 600, 70);
-        f.add(on); f.add(copy); f.add(information);
+    public static int i = 1;
+
+    public void actionPerformed(ActionEvent e) {
+
+        if(i == 1) {
+            luku1.setFont(bigfont); luku1.setBackground(Color.LIGHT_GRAY);
+            luku2.setFont(bigfont); luku2.setBackground(Color.LIGHT_GRAY);
+            luku3.setFont(bigfont); luku3.setBackground(Color.LIGHT_GRAY);
+            option1.setFont(font); option1.setBackground(Color.LIGHT_GRAY);
+            option2.setFont(font); option2.setBackground(Color.LIGHT_GRAY);
+            vastaus.setFont(bigfont); vastaus.setBackground(barColor);
+            information.setOpaque(true);
+            information.setFont(smallfont); information.setBackground(barColor);
+            on.setFont(bigfont); on.setBackground(color2);
+            operaatio.setFont(bigfont);
+            copy.setBackground(color2);
+
+            menuteksti.setBounds(200, 25, 400, 40);
+            operaatio.setBounds(380, 100, 40, 50);
+            luku1.setBounds(245, 100, 110, 60);
+            luku2.setBounds(445, 100, 110, 60);
+            luku3.setBounds(270, 130, 80, 60);
+            option1.setBounds(450, 100, 60, 60);
+            option2.setBounds(450, 160, 60, 60);
+            option1.setMargin(new Insets(0, 0, 0, 0));
+            option2.setMargin(new Insets(0, 0, 0, 0));
+            vastaus.setBounds(290,250, 220, 70);
+            vastaus.setEditable(false);
+            on.setBounds(220, 250, 70, 70);
+            copy.setBounds(510, 250, 70, 70);
+            information.setBounds(100, 350, 600, 70);
+
+            on.addActionListener(this);
+            option1.addActionListener(this);
+            option2.addActionListener(this);
+
+            f.add(on); f.add(copy); f.add(information);
+
+            i = 0;
+        }
 
         f.remove(luku1); f.remove(luku2); f.remove(operaatio); f.remove(luku3); f.remove(option1); f.remove(option2); f.remove(vastaus);
 
         if(e.getSource() == i1) {
+            state = "Yhteenlasku";
             menuteksti.setText("Yhteenlasku");
             operaatio.setText("+");
             information.setText("Yhteenlaskussa kahden luvun arvot summataan yhteen");
             luku1.setText(null); luku2.setText(null); vastaus.setText(null);
-            f.add(operaatio); f.add(luku1); f.add(luku2); f.add(vastaus);
         }
-        if(e.getSource() == i2) {
+        else if(e.getSource() == i2) {
+            state = "Vähennyslasku";
             menuteksti.setText("Vähennyslasku");
             operaatio.setText("-");
             information.setText("Vähennyslaskussa ensimmäisestä luvusta vähennetään seuraava luku");
             luku1.setText(null); luku2.setText(null); vastaus.setText(null);
-            f.add(operaatio); f.add(luku1); f.add(luku2); f.add(vastaus);
         }
-        if(e.getSource() == i3) {
+        else if(e.getSource() == i3) {
+            state = "Kertolasku";
             menuteksti.setText("Kertolasku");
             operaatio.setText("*");
             information.setText("<html> Kertolaskussa ensimmäinen luku summataan toisen luvun arvon <br> mukainen määrä kertoja </html>");
             luku1.setText(null); luku2.setText(null); vastaus.setText(null);
-            f.add(operaatio); f.add(luku1); f.add(luku2); f.add(vastaus);
         }
-        if(e.getSource() == i4) {
+        else if(e.getSource() == i4) {
+            state = "Jakolasku";
             menuteksti.setText("Jakolasku");
             operaatio.setText("%");
             information.setText("<html> Jakolaskussa lasketaan moneenko toiseen lukuun <br> ensimmäinen luku voidaan jakaa </html>");
             luku1.setText(null); luku2.setText(null); vastaus.setText(null);
-            f.add(operaatio); f.add(luku1); f.add(luku2); f.add(vastaus);
         }
-        if(e.getSource() == i5) {
+        else if(e.getSource() == i5) {
+            state = "Keskiarvo";
             menuteksti.setText("Keskiarvo");
             vastaus.setText(null);
             information.setText("<html> Keskiarvossa lasketaan kaikki luvut yhteen ja <br> sitten jaetaan niiden lukumäärällä </html>");
             f.add(vastaus);
         }
-        if(e.getSource() == i6) {
+        else if(e.getSource() == i6) {
+            state = "Mediaani";
             menuteksti.setText("Mediaani");
             vastaus.setText(null);
             information.setText("<html> Mediaanissa otetaan annettujen lukujen keskimmäinen <br> luku tai kahden keskimmäisen luvun keskiarvo </html>");
             f.add(vastaus);
         }
-        if(e.getSource() == i7) {
+        else if(e.getSource() == i7) {
+            state = "Celcius";
             menuteksti.setText("°C/°F");
             luku3.setText(null); vastaus.setText(null);
             option1.setText("°C"); option2.setText("°F");
-            information.setText("<html> Muuntaa Fahrenheit-asteet Celcius-asteiksi ja <br> vastaavasti toisinpäin </html>");
-            f.add(luku3); f.add(option1); f.add(option2); f.add(vastaus); 
+            information.setText("Muuntaa luvun Celcius- tai Fahrenheit-asteiksi");
         }
-        if(e.getSource() == i8) {
+        else if(e.getSource() == i8) {
+            state = "Aste";
             menuteksti.setText("Aste/Rad");
             luku3.setText(null); vastaus.setText(null);
             option1.setText("°"); option2.setText("Rad");
-            information.setText("Muuntaa asteet radiaaneiksi ja vastaavasti toisinpäin");
+            information.setText("Muuntaa luvun asteiksi tai radiaaneiksi");
+        }
+
+        else if(e.getSource() == on) {
+            if(state == "Yhteenlasku") {
+                try {
+                    vastaus.setText(String.format("%.3f", Operations.addition(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
+                } catch (NumberFormatException exc) {
+                    vastaus.setText("Ongelma");
+                }
+            }
+            else if(state == "Vähennyslasku") {
+                try {
+                    vastaus.setText(String.format("%.3f", Operations.subtraction(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
+                } catch (NumberFormatException exc) {
+                    vastaus.setText("Ongelma");
+                }
+            }
+            else if(state == "Kertolasku") {
+                try {
+                    vastaus.setText(String.format("%.3f", Operations.multiplication(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
+                } catch (NumberFormatException exc) {
+                    vastaus.setText("Ongelma");
+                }
+            }
+            else if(state == "Jakolasku") {
+                try {
+                    vastaus.setText(String.format("%.3f", Operations.division(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
+                } catch (NumberFormatException exc) {
+                    vastaus.setText("Ongelma");
+                }
+            }
+            else if(state == "Keskiarvo") {
+                vastaus.setText("Ongelma");
+            }
+            else if(state == "Mediaani") {
+                vastaus.setText("Ongelma");
+            }
+        }
+
+        else if(e.getSource() == option1) {
+            if(state == "Celcius") {
+                try {
+                    vastaus.setText(String.format("%.3f °C", Operations.fahrToCelc(Double.parseDouble(luku3.getText()))));
+                } catch (NumberFormatException exc) {
+                    vastaus.setText("Ongelma");
+                }
+            }
+            else if(state == "Aste") {
+                try {
+                    vastaus.setText(String.format("%.3f °", Operations.radToDeg(Double.parseDouble(luku3.getText()))));
+                } catch (NumberFormatException exc) {
+                    vastaus.setText("Ongelma");
+                }
+            }
+        }
+        else if(e.getSource() == option2) {
+            if(state == "Celcius") {
+                try {
+                    vastaus.setText(String.format("%.3f °F", Operations.celcToFahr(Double.parseDouble(luku3.getText()))));
+                } catch (NumberFormatException exc) {
+                    vastaus.setText("Ongelma");
+                }
+            }
+            else if(state == "Aste") {
+                try {
+                    vastaus.setText(String.format("%.3f Rad", Operations.degToRad(Double.parseDouble(luku3.getText()))));
+                } catch (NumberFormatException exc) {
+                    vastaus.setText("Ongelma");
+                }
+            }
+        }
+
+        if(state == "Yhteenlasku" || state == "Vähennyslasku" || state == "Kertolasku" || state == "Jakolasku") {
+            f.add(operaatio); f.add(luku1); f.add(luku2); f.add(vastaus);
+        }
+        else if(state == "Keskiarvo" || state == "Mediaani") {
+            f.add(vastaus);
+        }
+        else if(state == "Celsius" || state == "Aste") {
             f.add(luku3); f.add(option1); f.add(option2); f.add(vastaus);
         }
+
         f.revalidate();
         f.repaint();
     }
 
     public static void main(String[] args) {    
-        new Mathematize();    
+        new Mathematize();
     }    
 }  
