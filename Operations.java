@@ -1,7 +1,5 @@
-package mathematize;
 import java.util.Arrays;
 public class Operations {
-    
     
     public static double addition(double number1, double number2) {
         return number1 + number2;
@@ -19,7 +17,7 @@ public class Operations {
         return number1 * number2;
     }
 
-    public static double median(double[] numbers) {
+    public static double median(Double[] numbers) {
         Arrays.sort(numbers);
         int lenght = numbers.length;
         if (lenght % 2 == 0) {
@@ -31,7 +29,7 @@ public class Operations {
         }
     }
 
-    public static double mean(double[] numbers) {
+    public static double mean(Double[] numbers) {
         int lenght = numbers.length;
         double result = 0;     
         for (int i = 0; i < lenght; i++) {
@@ -55,11 +53,5 @@ public class Operations {
 
     public static double celcToFahr(double number) {
         return (number * 9/5) + 32;
-    }
-
-    public static double convertInput(String input) throws NumberFormatException, NullPointerException{
-        double result;
-        result = Double.parseDouble(input);
-        return result;
     }
 }

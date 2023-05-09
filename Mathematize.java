@@ -4,6 +4,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import javax.swing.*;  
 
 public class Mathematize implements ActionListener{  
@@ -20,6 +23,7 @@ public class Mathematize implements ActionListener{
     public static JTextField luku1 = new JTextField(" ", SwingConstants.CENTER);
     public static JTextField luku2 = new JTextField(" ", SwingConstants.CENTER);
     public static JTextField luku3 = new JTextField(" ", SwingConstants.CENTER);
+    public static JTextField luku4 = new JTextField(" ", SwingConstants.CENTER);
     public static JTextField vastaus = new JTextField(" ", SwingConstants.CENTER);
     public static JLabel operaatio = new JLabel(" ", SwingConstants.CENTER);
     public static JLabel information = new JLabel(" ", JLabel.CENTER);
@@ -93,6 +97,7 @@ public class Mathematize implements ActionListener{
             luku1.setFont(bigfont); luku1.setBackground(Color.LIGHT_GRAY);
             luku2.setFont(bigfont); luku2.setBackground(Color.LIGHT_GRAY);
             luku3.setFont(bigfont); luku3.setBackground(Color.LIGHT_GRAY);
+            luku4.setFont(bigfont); luku4.setBackground(Color.LIGHT_GRAY);
             option1.setFont(font); option1.setBackground(Color.LIGHT_GRAY);
             option2.setFont(font); option2.setBackground(Color.LIGHT_GRAY);
             vastaus.setFont(bigfont); vastaus.setBackground(barColor);
@@ -107,6 +112,7 @@ public class Mathematize implements ActionListener{
             luku1.setBounds(245, 100, 110, 60);
             luku2.setBounds(445, 100, 110, 60);
             luku3.setBounds(270, 130, 80, 60);
+            luku4.setBounds(200, 100, 400, 60);
             option1.setBounds(450, 100, 60, 60);
             option2.setBounds(450, 160, 60, 60);
             option1.setMargin(new Insets(0, 0, 0, 0));
@@ -126,7 +132,7 @@ public class Mathematize implements ActionListener{
             i = 0;
         }
 
-        f.remove(luku1); f.remove(luku2); f.remove(operaatio); f.remove(luku3); f.remove(option1); f.remove(option2); f.remove(vastaus);
+        f.remove(luku1); f.remove(luku2); f.remove(operaatio); f.remove(luku3); f.remove(luku4); f.remove(option1); f.remove(option2); f.remove(vastaus);
 
         if(e.getSource() == i1) {
             state = "Yhteenlasku";
@@ -160,15 +166,13 @@ public class Mathematize implements ActionListener{
             state = "Keskiarvo";
             menuteksti.setText("Keskiarvo");
             vastaus.setText(null);
-            information.setText("<html> Keskiarvossa lasketaan kaikki luvut yhteen ja <br> sitten jaetaan niiden lukumäärällä </html>");
-            f.add(vastaus);
+            information.setText("<html> Keskiarvossa lasketaan kaikki luvut yhteen ja sitten <br> jaetaan niiden lukumäärällä. Anna luvut pilkuilla eroteltuna </html>");
         }
         else if(e.getSource() == i6) {
             state = "Mediaani";
             menuteksti.setText("Mediaani");
             vastaus.setText(null);
-            information.setText("<html> Mediaanissa otetaan annettujen lukujen keskimmäinen <br> luku tai kahden keskimmäisen luvun keskiarvo </html>");
-            f.add(vastaus);
+            information.setText("<html> Mediaanissa otetaan annettujen lukujen keskimmäinen luku tai <br> kahden keskimmäisen luvun keskiarvo. Anna luvut pilkuilla eroteltuna </html>");
         }
         else if(e.getSource() == i7) {
             state = "Celcius";
@@ -190,35 +194,57 @@ public class Mathematize implements ActionListener{
                 try {
                     vastaus.setText(String.format("%.3f", Operations.addition(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
                 } catch (NumberFormatException exc) {
-                    vastaus.setText("Ongelma");
+                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
             }
             else if(state == "Vähennyslasku") {
                 try {
                     vastaus.setText(String.format("%.3f", Operations.subtraction(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
                 } catch (NumberFormatException exc) {
-                    vastaus.setText("Ongelma");
+                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
             }
             else if(state == "Kertolasku") {
                 try {
                     vastaus.setText(String.format("%.3f", Operations.multiplication(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
                 } catch (NumberFormatException exc) {
-                    vastaus.setText("Ongelma");
+                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
             }
             else if(state == "Jakolasku") {
                 try {
                     vastaus.setText(String.format("%.3f", Operations.division(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
                 } catch (NumberFormatException exc) {
-                    vastaus.setText("Ongelma");
+                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
             }
             else if(state == "Keskiarvo") {
-                vastaus.setText("Ongelma");
+                try {
+                    ArrayList <Double> doublelista = new ArrayList<Double>();
+                    ArrayList <String> luvut = new ArrayList<>(Arrays.asList(luku4.getText().split(",")));
+                    for(int index = 0; index < luvut.size(); index++) {
+                        doublelista.add(Double.parseDouble(luvut.get(index)));
+                    }
+                    Double[] arr = new Double[luvut.size()];
+                    arr = doublelista.toArray(arr);
+                    vastaus.setText(String.format("%.3f", Operations.mean(arr)));
+                } catch (NumberFormatException exc) {
+                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Anna arvot pilkuilla eroteltuna. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
+                }
             }
             else if(state == "Mediaani") {
-                vastaus.setText("Ongelma");
+                try {
+                    ArrayList <Double> doublelista = new ArrayList<Double>();
+                    ArrayList <String> luvut = new ArrayList<>(Arrays.asList(luku4.getText().split(",")));
+                    for(int index = 0; index < luvut.size(); index++) {
+                        doublelista.add(Double.parseDouble(luvut.get(index)));
+                    }
+                    Double[] arr = new Double[luvut.size()];
+                    arr = doublelista.toArray(arr);
+                    vastaus.setText(String.format("%.3f", Operations.median(arr)));
+                } catch (NumberFormatException exc) {
+                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Anna arvot pilkuilla eroteltuna. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
+                }
             }
         }
 
@@ -227,14 +253,14 @@ public class Mathematize implements ActionListener{
                 try {
                     vastaus.setText(String.format("%.3f °C", Operations.fahrToCelc(Double.parseDouble(luku3.getText()))));
                 } catch (NumberFormatException exc) {
-                    vastaus.setText("Ongelma");
+                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
             }
             else if(state == "Aste") {
                 try {
                     vastaus.setText(String.format("%.3f °", Operations.radToDeg(Double.parseDouble(luku3.getText()))));
                 } catch (NumberFormatException exc) {
-                    vastaus.setText("Ongelma");
+                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
             }
         }
@@ -243,14 +269,14 @@ public class Mathematize implements ActionListener{
                 try {
                     vastaus.setText(String.format("%.3f °F", Operations.celcToFahr(Double.parseDouble(luku3.getText()))));
                 } catch (NumberFormatException exc) {
-                    vastaus.setText("Ongelma");
+                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
             }
             else if(state == "Aste") {
                 try {
                     vastaus.setText(String.format("%.3f Rad", Operations.degToRad(Double.parseDouble(luku3.getText()))));
                 } catch (NumberFormatException exc) {
-                    vastaus.setText("Ongelma");
+                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
             }
         }
@@ -259,14 +285,19 @@ public class Mathematize implements ActionListener{
             f.add(operaatio); f.add(luku1); f.add(luku2); f.add(vastaus);
         }
         else if(state == "Keskiarvo" || state == "Mediaani") {
-            f.add(vastaus);
+            f.add(vastaus); f.add(luku4);
         }
-        else if(state == "Celsius" || state == "Aste") {
+        else if(state == "Celcius" || state == "Aste") {
             f.add(luku3); f.add(option1); f.add(option2); f.add(vastaus);
         }
 
         f.revalidate();
         f.repaint();
+    }
+
+    public static void errorMessage(String message, String title) {
+
+        JOptionPane.showMessageDialog(f, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
     public static void main(String[] args) {    
