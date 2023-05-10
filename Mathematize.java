@@ -6,6 +6,9 @@ import java.awt.Insets;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.awt.datatransfer.StringSelection;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 
 import javax.swing.*;  
 
@@ -20,10 +23,10 @@ public class Mathematize implements ActionListener{
     public static Color barColor = new Color(255, 151, 151);
     public static Color color2 = new Color(182, 116, 116);
 
-    public static JTextField luku1 = new JTextField(" ", SwingConstants.CENTER);
-    public static JTextField luku2 = new JTextField(" ", SwingConstants.CENTER);
-    public static JTextField luku3 = new JTextField(" ", SwingConstants.CENTER);
-    public static JTextField luku4 = new JTextField(" ", SwingConstants.CENTER);
+    public static JTextField luku1 = new JTextField(null, SwingConstants.CENTER);
+    public static JTextField luku2 = new JTextField(null, SwingConstants.CENTER);
+    public static JTextField luku3 = new JTextField(null, SwingConstants.CENTER);
+    public static JTextField luku4 = new JTextField(null, SwingConstants.CENTER);
     public static JTextField vastaus = new JTextField(" ", SwingConstants.CENTER);
     public static JLabel operaatio = new JLabel(" ", SwingConstants.CENTER);
     public static JLabel information = new JLabel(" ", JLabel.CENTER);
@@ -90,6 +93,7 @@ public class Mathematize implements ActionListener{
     }  
 
     public static int i = 1;
+    public static String valittu = null;
 
     public void actionPerformed(ActionEvent e) {
 
@@ -126,6 +130,7 @@ public class Mathematize implements ActionListener{
             on.addActionListener(this);
             option1.addActionListener(this);
             option2.addActionListener(this);
+            copy.addActionListener(this);
 
             f.add(on); f.add(copy); f.add(information);
 
@@ -139,58 +144,63 @@ public class Mathematize implements ActionListener{
             menuteksti.setText("Yhteenlasku");
             operaatio.setText("+");
             information.setText("Yhteenlaskussa kahden luvun arvot summataan yhteen");
-            luku1.setText(null); luku2.setText(null); vastaus.setText(null);
+            luku1.setText(null); luku2.setText(null); luku3.setText(null); luku4.setText(null); vastaus.setText(null);
         }
         else if(e.getSource() == i2) {
             state = "Vähennyslasku";
             menuteksti.setText("Vähennyslasku");
             operaatio.setText("-");
             information.setText("Vähennyslaskussa ensimmäisestä luvusta vähennetään seuraava luku");
-            luku1.setText(null); luku2.setText(null); vastaus.setText(null);
+            luku1.setText(null); luku2.setText(null); luku3.setText(null); luku4.setText(null); vastaus.setText(null);
         }
         else if(e.getSource() == i3) {
             state = "Kertolasku";
             menuteksti.setText("Kertolasku");
             operaatio.setText("*");
             information.setText("<html> Kertolaskussa ensimmäinen luku summataan toisen luvun arvon <br> mukainen määrä kertoja </html>");
-            luku1.setText(null); luku2.setText(null); vastaus.setText(null);
+            luku1.setText(null); luku2.setText(null); luku3.setText(null); luku4.setText(null); vastaus.setText(null);
         }
         else if(e.getSource() == i4) {
             state = "Jakolasku";
             menuteksti.setText("Jakolasku");
             operaatio.setText("%");
             information.setText("<html> Jakolaskussa lasketaan moneenko toiseen lukuun <br> ensimmäinen luku voidaan jakaa </html>");
-            luku1.setText(null); luku2.setText(null); vastaus.setText(null);
+            luku1.setText(null); luku2.setText(null); luku3.setText(null); luku4.setText(null); vastaus.setText(null);
         }
         else if(e.getSource() == i5) {
             state = "Keskiarvo";
             menuteksti.setText("Keskiarvo");
-            vastaus.setText(null);
             information.setText("<html> Keskiarvossa lasketaan kaikki luvut yhteen ja sitten <br> jaetaan niiden lukumäärällä. Anna luvut pilkuilla eroteltuna </html>");
+            luku1.setText(null); luku2.setText(null); luku3.setText(null); luku4.setText(null); vastaus.setText(null);
         }
         else if(e.getSource() == i6) {
             state = "Mediaani";
             menuteksti.setText("Mediaani");
-            vastaus.setText(null);
             information.setText("<html> Mediaanissa otetaan annettujen lukujen keskimmäinen luku tai <br> kahden keskimmäisen luvun keskiarvo. Anna luvut pilkuilla eroteltuna </html>");
+            luku1.setText(null); luku2.setText(null); luku3.setText(null); luku4.setText(null); vastaus.setText(null);
         }
         else if(e.getSource() == i7) {
             state = "Celcius";
             menuteksti.setText("°C/°F");
-            luku3.setText(null); vastaus.setText(null);
             option1.setText("°C"); option2.setText("°F");
-            information.setText("Muuntaa luvun Celcius- tai Fahrenheit-asteiksi");
+            information.setText("<html> Muuntaa luvun Celcius- tai Fahrenheit-asteiksi. Anna luku ja <br> valitse kummaksi haluat sen muuttaa </html>");
+            luku1.setText(null); luku2.setText(null); luku3.setText(null); luku4.setText(null); vastaus.setText(null); valittu = null;
         }
         else if(e.getSource() == i8) {
             state = "Aste";
             menuteksti.setText("Aste/Rad");
-            luku3.setText(null); vastaus.setText(null);
             option1.setText("°"); option2.setText("Rad");
-            information.setText("Muuntaa luvun asteiksi tai radiaaneiksi");
+            information.setText("<html> Muuntaa luvun asteiksi tai radiaaneiksi. Anna luku ja <br> valitse kummaksi haluat sen muuttaa </html>");
+            luku1.setText(null); luku2.setText(null); luku3.setText(null); luku4.setText(null); vastaus.setText(null); valittu = null;
         }
 
         else if(e.getSource() == on) {
-            if(state == "Yhteenlasku") {
+
+            if(luku1.getText().isBlank() && luku2.getText().isBlank() && luku3.getText().isBlank() && luku4.getText().isBlank()) {
+                //skip
+            }
+
+            else if(state == "Yhteenlasku") {
                 try {
                     vastaus.setText(String.format("%.3f", Operations.addition(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
                 } catch (NumberFormatException exc) {
@@ -246,39 +256,64 @@ public class Mathematize implements ActionListener{
                     errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Anna arvot pilkuilla eroteltuna. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
             }
+            else if(valittu == null) {
+                errorMessage("Virhe! Muista valita kummaksi haluat luvun muuttaa", "Funktiovirhe");
+            }
+            else if(state == "Celcius") {
+                if(valittu == "FahrToCelc") {
+                    try {
+                        vastaus.setText(String.format("%.3f °C", Operations.fahrToCelc(Double.parseDouble(luku3.getText()))));
+                    } catch (NumberFormatException exc) {
+                        errorMessage("Virhe! Vääränlainen syöte. Anna luku kokonais- tai liukulukuna. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
+                    }
+                }
+                else if(valittu == "CelcToFahr") {
+                    try {
+                        vastaus.setText(String.format("%.3f °F", Operations.celcToFahr(Double.parseDouble(luku3.getText()))));
+                    } catch (NumberFormatException exc) {
+                        errorMessage("Virhe! Vääränlainen syöte. Anna luku kokonais- tai liukulukuna. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
+                    }
+                }
+            }
+            else if(state == "Aste") {
+                if(valittu == "RadToDeg") {
+                    try {
+                        vastaus.setText(String.format("%.3f °", Operations.radToDeg(Double.parseDouble(luku3.getText()))));
+                    } catch (NumberFormatException exc) {
+                        errorMessage("Virhe! Vääränlainen syöte. Anna luku kokonais- tai liukulukuna. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
+                    }
+                }
+                else if(valittu == "DegToRad") {
+                    try {
+                        vastaus.setText(String.format("%.3f Rad", Operations.degToRad(Double.parseDouble(luku3.getText()))));
+                    } catch (NumberFormatException exc) {
+                        errorMessage("Virhe! Vääränlainen syöte. Anna luku kokonais- tai liukulukuna. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
+                    }
+                }
+            }
         }
 
         else if(e.getSource() == option1) {
             if(state == "Celcius") {
-                try {
-                    vastaus.setText(String.format("%.3f °C", Operations.fahrToCelc(Double.parseDouble(luku3.getText()))));
-                } catch (NumberFormatException exc) {
-                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
-                }
+                valittu = "FahrToCelc";
             }
             else if(state == "Aste") {
-                try {
-                    vastaus.setText(String.format("%.3f °", Operations.radToDeg(Double.parseDouble(luku3.getText()))));
-                } catch (NumberFormatException exc) {
-                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
-                }
+                valittu = "RadToDeg";
             }
         }
         else if(e.getSource() == option2) {
             if(state == "Celcius") {
-                try {
-                    vastaus.setText(String.format("%.3f °F", Operations.celcToFahr(Double.parseDouble(luku3.getText()))));
-                } catch (NumberFormatException exc) {
-                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
-                }
+                valittu = "CelcToFahr";
             }
             else if(state == "Aste") {
-                try {
-                    vastaus.setText(String.format("%.3f Rad", Operations.degToRad(Double.parseDouble(luku3.getText()))));
-                } catch (NumberFormatException exc) {
-                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
-                }
+                valittu = "DegToRad";
             }
+        }
+        else if(e.getSource() == copy && vastaus != null) {
+            String myString = vastaus.getText();
+            StringSelection stringSelection = new StringSelection(myString);
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(stringSelection, null);
         }
 
         if(state == "Yhteenlasku" || state == "Vähennyslasku" || state == "Kertolasku" || state == "Jakolasku") {
