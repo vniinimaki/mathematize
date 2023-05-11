@@ -42,7 +42,7 @@ public class Mathematize implements ActionListener{
     Mathematize() {  
 
         f = new JFrame();
-
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JLabel nimi = new JLabel(" Mathematize");
         JMenuBar menubar = new JMenuBar();
         JMenu menu = new JMenu("Valikko");
