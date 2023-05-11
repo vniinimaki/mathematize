@@ -4,12 +4,14 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.awt.datatransfer.StringSelection;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-
 import javax.swing.*;  
 
 public class Mathematize implements ActionListener{  
@@ -196,36 +198,44 @@ public class Mathematize implements ActionListener{
 
         else if(e.getSource() == on) {
 
+            DecimalFormat df = new DecimalFormat("#.###");
+            df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+
             if(luku1.getText().isBlank() && luku2.getText().isBlank() && luku3.getText().isBlank() && luku4.getText().isBlank()) {
                 //skip
             }
 
             else if(state == "Yhteenlasku") {
                 try {
-                    vastaus.setText(String.format("%.3f", Operations.addition(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
+                    vastaus.setText(df.format(Operations.addition(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
                 } catch (NumberFormatException exc) {
                     errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
             }
             else if(state == "Vähennyslasku") {
                 try {
-                    vastaus.setText(String.format("%.3f", Operations.subtraction(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
+                    vastaus.setText(df.format(Operations.subtraction(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
                 } catch (NumberFormatException exc) {
                     errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
             }
             else if(state == "Kertolasku") {
                 try {
-                    vastaus.setText(String.format("%.3f", Operations.multiplication(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
+                    vastaus.setText(df.format(Operations.multiplication(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
                 } catch (NumberFormatException exc) {
                     errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
             }
             else if(state == "Jakolasku") {
-                try {
-                    vastaus.setText(String.format("%.3f", Operations.division(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
-                } catch (NumberFormatException exc) {
-                    errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
+                if(Double.parseDouble(luku2.getText()) == 0) {
+                    errorMessage("Virhe! Vääränlainen syöte. Nollalla ei voi jakaa", "Syötevirhe");
+                }
+                else {
+                    try {
+                        vastaus.setText(df.format(Operations.division(Double.parseDouble(luku1.getText()),Double.parseDouble(luku2.getText()))));
+                    } catch (NumberFormatException exc) {
+                        errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
+                    }
                 }
             }
             else if(state == "Keskiarvo") {
@@ -237,7 +247,7 @@ public class Mathematize implements ActionListener{
                     }
                     Double[] arr = new Double[luvut.size()];
                     arr = doublelista.toArray(arr);
-                    vastaus.setText(String.format("%.3f", Operations.mean(arr)));
+                    vastaus.setText(df.format(Operations.mean(arr)));
                 } catch (NumberFormatException exc) {
                     errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Anna arvot pilkuilla eroteltuna. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
@@ -251,7 +261,7 @@ public class Mathematize implements ActionListener{
                     }
                     Double[] arr = new Double[luvut.size()];
                     arr = doublelista.toArray(arr);
-                    vastaus.setText(String.format("%.3f", Operations.median(arr)));
+                    vastaus.setText(df.format(Operations.median(arr)));
                 } catch (NumberFormatException exc) {
                     errorMessage("Virhe! Vääränlainen syöte. Anna luvut kokonais- tai liukulukuina. \n Anna arvot pilkuilla eroteltuna. \n Huomaa, että liukuluvut erotellaan pisteellä", "Syötevirhe");
                 }
@@ -335,7 +345,8 @@ public class Mathematize implements ActionListener{
         JOptionPane.showMessageDialog(f, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static void main(String[] args) {    
+    public static void main(String[] args) {   
+
         new Mathematize();
     }    
 }  
